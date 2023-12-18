@@ -1,10 +1,14 @@
 const asyncHandler = require("express-async-handler");
 
+const Goal = require("../models/goalModel");
+
 // Purpose: To handle requests from the routes for goals
 // Notes: @route GET /api/goals
 // Notes: Private route
 const getGoals = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: "Get Goals" });
+  const goals = await Goal.find();
+
+  res.status(200).json(goals);
 });
 
 // Purpose: To handle requests from the routes for goals
@@ -16,7 +20,9 @@ const setGoal = asyncHandler(async (req, res) => {
     throw new Error("Please enter a goal");
   }
 
-  res.status(200).json({ message: "Create Goals" });
+  const goal = await Goal.create({ text: req.body.text });
+
+  res.status(200).json(goal);
 });
 
 // Purpose: To handle requests from the routes for goals
