@@ -39,7 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
             _id: newUser._id,
             name: newUser.name,
             email: newUser.email,
-            // token: generateToken(newUser._id),
+            token: generateToken(newUser._id),
         });
     } else {
         res.status(400);
@@ -51,15 +51,43 @@ const registerUser = asyncHandler(async (req, res) => {
 // Notes: @route POST /api/users/login
 // Notes: Public route
 const loginUser = asyncHandler(async (req, res) => {
-    res.json({message: "Login User"});
+    const {email, password} = req.body;
+
+    // Check if user exists by email
+    const user = await User.findOne({email});
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            token: generateToken(user._id),
+        })
+    } else {
+        res.status(401);
+        throw new Error("Invalid Credentials");
+    }
 });
 
 // Purpose: Get user profile data
 // Notes: @route GET /api/users/me
-// Notes: Public route
+// Notes: Private route
 const getMe = asyncHandler(async (req, res) => {
-    res.json({message: "User Profile"});
+    const {_id, name, email} = await User.findById(req.user._id);
+
+    res.status(200).json({
+        _id,
+        name,
+        email,
+    });
 });
+
+// Generate JWT
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: "30d",
+    });
+};
 
 module.exports = {
     registerUser,
