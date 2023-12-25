@@ -40,12 +40,6 @@ function Header() {
             </li>
           </>
         )}
-
-        {/* <li>
-          <Link to="/dashboard">
-            <FaSignOutAlt /> Dashboard
-          </Link>
-        </li> */}
       </ul>
     </header>
   );
