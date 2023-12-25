@@ -86,6 +86,11 @@ h3 {
   color: #828282;
 }
 
+.logo {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
 .goals {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
